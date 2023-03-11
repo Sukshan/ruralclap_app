@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
+import 'package:ruralclap_app/constant/theme_color.dart';
+import 'package:ruralclap_app/controllers/user.dart';
+import 'package:ruralclap_app/utls/routes.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   const GoogleSignInButton({super.key});
@@ -10,33 +12,18 @@ class GoogleSignInButton extends StatefulWidget {
 
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
   bool _isSigningIn = false;
-  // ignore: body_might_complete_normally_nullable
-  static Future<String?> signInWithGoogle() async {
-    //CHANGE CLIENT ID WITH RESPECT TO YOUR OWN CLIENT ID!!!!!!!
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId:
-          '422436897824-jkjfr2tj51118i0d0h6fq7ucnutkfgtq.apps.googleusercontent.com',
-      serverClientId:
-          '422436897824-v7gfeacadmg099objpl7269e3kmflsf0.apps.googleusercontent.com',
-    );
-
-    final GoogleSignInAccount? googleSignInAccount =
-        await googleSignIn.signIn();
-
-    if (googleSignInAccount != null) {
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
-      return googleSignInAuthentication.idToken;
-    }
-  }
+  final UserController _userController = Get.put(UserController());
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: _isSigningIn
-          ? const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ? const Center(
+              child: CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(ColorConstant.primaryColor),
+              ),
             )
           : OutlinedButton(
               style: ButtonStyle(
@@ -51,47 +38,42 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 setState(() {
                   _isSigningIn = true;
                 });
-
-                final String? accessToken = await signInWithGoogle();
-
-                try {
-                  // var token = await user.getIdToken();
-                  var res = await http.post(
-                      Uri.parse(
-                          'http://192.168.137.1:8000/authentication/rest-auth/google/'),
-                      headers: {'Authorization': 'Bearer $accessToken'});
-                  print(res.body);
-                } catch (e) {
-                  print(e);
-                }
-
+                await _userController.login();
                 setState(() {
                   _isSigningIn = false;
                 });
+                if (_userController.user.name == null) {
+                  Get.offAndToNamed(RoutesClass.onboardingPage);
+                } else {
+                  Get.offAndToNamed(RoutesClass.layoutPageRoute);
+                }
               },
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Image(
-                      image: AssetImage(
-                        "assets/images/google_logo.png",
-                      ),
-                      height: 24.0,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text(
-                        'Sign in with Google',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w600,
+              child: Material(
+                elevation: 5,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Image(
+                        image: AssetImage(
+                          "assets/images/google_logo.png",
                         ),
+                        height: 24.0,
                       ),
-                    )
-                  ],
+                      Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: Text(
+                          'Sign in with Google',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
