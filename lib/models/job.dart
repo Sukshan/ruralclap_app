@@ -1,13 +1,16 @@
+import 'package:ruralclap_app/models/user.dart';
+
 class Job {
   int? id;
   String? title;
   String? description;
+  String? location;
   int? pay;
   String? requiredSkills;
   String? status;
   int? employer;
-  int? serviceProvider;
-  int? category;
+  User? serviceProvider;
+  String? category;
 
   Job(
       {this.id,
@@ -18,7 +21,8 @@ class Job {
       this.status,
       this.employer,
       this.serviceProvider,
-      this.category});
+      this.category,
+      this.location});
 
   Job.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -28,8 +32,11 @@ class Job {
     requiredSkills = json['required_skills'];
     status = json['status'];
     employer = json['employer'];
-    serviceProvider = json['service_provider'];
+    if (json['service_provider'] != null) {
+      serviceProvider = User.fromJson(json['service_provider']);
+    }
     category = json['category'];
+    location = json['location'];
   }
 
   Map<String, dynamic> toJson() {
@@ -41,8 +48,9 @@ class Job {
     data['required_skills'] = requiredSkills;
     data['status'] = status;
     data['employer'] = employer;
-    data['service_provider'] = serviceProvider;
+    // data['service_provider'] = serviceProvider;
     data['category'] = category;
+    data['location'] = location;
     return data;
   }
 }

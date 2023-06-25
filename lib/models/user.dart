@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 class User {
   int? id;
   String? name;
@@ -5,13 +7,17 @@ class User {
   String? skills;
   String? email;
   int? phone;
-  int? rating;
+  double? rating;
   String? location;
   int? age;
   String? language;
   String? gender;
   int? expectedPayment;
   bool? isEmployer;
+  String? category;
+  String? education;
+  int? experience;
+  double? modelRating;
 
   User({
     this.id,
@@ -27,6 +33,10 @@ class User {
     this.gender,
     this.expectedPayment,
     this.isEmployer,
+    this.category,
+    this.education,
+    this.experience,
+    this.modelRating,
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -43,6 +53,10 @@ class User {
     gender = json['gender'];
     expectedPayment = json['expectedPayment'];
     isEmployer = json['isEmployer'];
+    category = json['category'];
+    education = json['education'];
+    experience = json['experience'];
+    modelRating = json['modelRating'];
   }
 
   Map<String, dynamic> toJson() {
@@ -60,6 +74,10 @@ class User {
     data['gender'] = gender;
     data['expectedPayment'] = expectedPayment;
     data['isEmployer'] = isEmployer;
+    data['category'] = category;
+    data['education'] = education;
+    data['experience'] = experience;
+    data['modelRating'] = modelRating;
     return data;
   }
 }

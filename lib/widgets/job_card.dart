@@ -1,39 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:ruralclap_app/pages/job_information.dart';
+import 'package:get/get.dart';
+import 'package:ruralclap_app/constant/theme_color.dart';
+import 'package:ruralclap_app/models/job.dart';
+import 'package:ruralclap_app/utls/routes.dart';
 
 class JobCard extends StatelessWidget {
-  const JobCard({super.key});
+  JobCard({
+    super.key,
+    required this.job,
+  });
+  Job job;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Card(
-        elevation: 3,
+        elevation: 2,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            debugPrint('Card tapped.');
-          },
-          child: Hero(
-            tag: 'ListTile-Hero',
-            // Wrap the ListTile in a Material widget so the ListTile has someplace
-            // to draw the animated colors during the hero transition.
-            child: Material(
-              child: ListTile(
-                leading: Icon(Icons.business, size: 45),
-                title: Text('Position'),
-                subtitle: Text('Company \t rating \nLocation'),
-                isThreeLine: true,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<Widget>(builder: (BuildContext context) {
-                      return job_information();
-                    }),
-                  );
-                },
+          child: Material(
+            child: ListTile(
+              leading: const Icon(
+                Icons.business,
+                size: 45,
+                color: ColorConstant.textPrimaryBlack,
               ),
+              title: Text(
+                job.title!,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(job.category!),
+                  Text(
+                    'Location: ${job.location}    Expected pay: ${job.pay}',
+                  ),
+                  const Text('Skills:'),
+                  Text(job.requiredSkills!),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
+              isThreeLine: true,
+              onTap: () {
+                Get.toNamed(RoutesClass.jobDetailPageRoute, arguments: job);
+              },
             ),
           ),
         ),
